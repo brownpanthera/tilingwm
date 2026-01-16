@@ -1,0 +1,2 @@
+v0 => random overlapping to col/row
+hot key pressed -> i'll take all the windows =? maybe arrange them in columns or rows
