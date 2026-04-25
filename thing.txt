@@ -1,2 +1,39 @@
 v0 => random overlapping to col/row
 hot key pressed -> i'll take all the windows =? maybe arrange them in columns or rows
+
+--- closure
+EnumWindows starts
+    ↓
+Window 1 found (hwnd = 0x1234)
+    → callback(0x1234, nil) called
+    → closure adds 0x1234 to allOpenHandles
+    ↓
+Window 2 found (hwnd = 0x5678)  
+    → callback(0x5678, nil) called
+    → closure adds 0x5678 to allOpenHandles
+    ↓
+... and so on
+    ↓
+EnumWindows ends
+allOpenHandles = [0x1234, 0x5678, ...]
+
+---- lparam
+allOpenHandles lives at address 0xABCD
+    ↓
+EnumWindows(callback, 0xABCD)   ← we pass the address!
+    ↓
+Window 1 found (hwnd = 0x1234)
+    → callback(0x1234, 0xABCD) called  ← Windows passes it back!
+    → we convert 0xABCD back to *[]uintptr
+    → add 0x1234 to that slice
+    ↓
+Window 2 found (hwnd = 0x5678)
+    → callback(0x5678, 0xABCD) called  ← Same lparam again!
+    → we convert 0xABCD back to *[]uintptr
+    → add 0x5678 to that slice
+
+
+
+v0 replicating niri
+open new window? goes to new column to the right -> right -> right
+visibility? two or one column at a time
